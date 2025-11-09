@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>お誕生日おめでとう 🎂</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Hiragino Sans", "Noto Sans JP", sans-serif;
+      background: linear-gradient(180deg, #ffe9ec, #fff);
+      color: #333;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.2rem;
+      margin-top: 60px;
+      color: #e85a70;
+    }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin: 16px auto;
+      max-width: 600px;
+    }
+    img {
+      width: 220px;
+      margin-top: 30px;
+    }
+    section {
+      margin: 60px auto;
+      max-width: 700px;
+      background: rgba(255,255,255,0.7);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    audio {
+      margin-top: 20px;
+      width: 80%;
+      max-width: 400px;
+    }
+    footer {
+      margin: 40px auto;
+      font-size: 0.9rem;
+      color: #777;
+    }
+    textarea {
+      width: 90%;
+      max-width: 500px;
+      height: 100px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 1rem;
+      resize: none;
+    }
+    button {
+      margin-top: 10px;
+      background: #e85a70;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    button:hover {
+      background: #f17888;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. 生日祝福 + 图片 -->
+  <section>
+    <h1>お誕生日おめでとう 🎂</h1>
+    <img src="图片1.jpg" alt="バースデーケーキ">
+  </section>
+
+  <!-- 2. 我的祝福语 -->
+  <section>
+    <h2>私からのメッセージ 🎈</h2>
+    <p>
+      今日はあすかの特別な日だね。<br>
+      この一年も、笑顔がたくさんの素敵な日々になりますように。<br>
+      生まれてきてくれてありがとう。
+    </p>
+  </section>
+
+  <!-- 3. 生日歌 -->
+  <section>
+    <h2>バースデーソング ♪</h2>
+    <p>クリックして再生してね。</p>
+    <audio controls>
+      <source src="birthday_song.mp3" type="audio/mpeg">
+      お使いのブラウザでは音声が再生できません。
+    </audio>
+  </section>
+
+  <!-- 4. 留言板 -->
+  <section>
+    <h2>メッセージボード 💬</h2>
+    <p>ここに一言メッセージを書いてね！</p>
+    <form onsubmit="return postMessage(event)">
+      <textarea id="message" placeholder="メッセージを入力..."></textarea><br>
+      <button type="submit">送信</button>
+    </form>
+    <div id="messages" style="margin-top:20px;"></div>
+  </section>
+
+  <footer>
+    <p>Created with ❤️ by KON</p>
+  </footer>
+
+  <script>
+    // 留言板简单存本地（刷新会留着）
+    const msgBox = document.getElementById('messages');
+    const stored = JSON.parse(localStorage.getItem('birthday_messages') || '[]');
+    stored.forEach(addMessage);
+
+    function postMessage(e) {
+      e.preventDefault();
+      const text = document.getElementById('message').value.trim();
+      if(!text) return;
+      const msg = { text, time: new Date().toLocaleString('ja-JP') };
+      stored.push(msg);
+      localStorage.setItem('birthday_messages', JSON.stringify(stored));
+      addMessage(msg);
+      document.getElementById('message').value = '';
+    }
+
+    function addMessage(m) {
+      const div = document.createElement('div');
+      div.style.background = '#fff';
+      div.style.padding = '10px 14px';
+      div.style.margin = '10px auto';
+      div.style.maxWidth = '500px';
+      div.style.borderRadius = '8px';
+      div.style.textAlign = 'left';
+      div.innerHTML = `<strong>🕊 ${m.time}</strong><br>${m.text}`;
+      msgBox.prepend(div);
+    }
+  </script>
+
+</body>
+</html>
