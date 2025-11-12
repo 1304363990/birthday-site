@@ -11,22 +11,77 @@
       background: linear-gradient(180deg, #ffe9ec, #fff);
       color: #333;
       text-align: center;
+      overflow-x: hidden;
     }
-    h1 {
-      font-size: 2.2rem;
-      margin-top: 60px;
+
+    /* ===== Intro 区 ===== */
+    #intro {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, #ffd1dc, #fff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      transition: opacity 1s ease;
+    }
+
+    #intro h1 {
+      font-size: 2.5rem;
       color: #e85a70;
+      animation: fadeIn 2s ease forwards;
     }
-    p {
-      font-size: 1.1rem;
-      line-height: 1.8;
-      margin: 16px auto;
-      max-width: 600px;
-    }
-    img {
-      width: 220px;
+
+    #enter-btn {
       margin-top: 30px;
+      padding: 12px 24px;
+      background: #e85a70;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      animation: fadeIn 3s ease forwards;
     }
+
+    #enter-btn:hover {
+      background: #f17888;
+    }
+
+    /* 氣球動畫 */
+    .balloon {
+      position: absolute;
+      bottom: -150px;
+      width: 60px;
+      height: 80px;
+      border-radius: 50%;
+      background: pink;
+      opacity: 0.8;
+      animation: floatUp 6s ease-in infinite;
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      width: 2px;
+      height: 25px;
+      background: #aaa;
+      transform: translateX(-50%);
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0.9; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
     section {
       margin: 60px auto;
       max-width: 700px;
@@ -35,16 +90,37 @@
       padding: 30px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-top: 60px;
+      color: #e85a70;
+    }
+
+    p {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin: 16px auto;
+      max-width: 600px;
+    }
+
+    img {
+      width: 220px;
+      margin-top: 30px;
+    }
+
     audio {
       margin-top: 20px;
       width: 80%;
       max-width: 400px;
     }
+
     footer {
       margin: 40px auto;
       font-size: 0.9rem;
       color: #777;
     }
+
     textarea {
       width: 90%;
       max-width: 500px;
@@ -55,6 +131,7 @@
       font-size: 1rem;
       resize: none;
     }
+
     button {
       margin-top: 10px;
       background: #e85a70;
@@ -65,6 +142,7 @@
       cursor: pointer;
       font-size: 1rem;
     }
+
     button:hover {
       background: #f17888;
     }
@@ -72,48 +150,78 @@
 </head>
 <body>
 
-  <!-- 1. 生日祝福 + 图片 -->
-  <section>
-    <h1>お誕生日おめでとう 🎂</h1>
-    <img src="图片1.jpg" alt="バースデーケーキ">
-  </section>
+  <!-- Intro -->
+  <div id="intro">
+    <h1>🎈 サプライズ！ 🎈</h1>
+    <button id="enter-btn">クリックして開けてね 🎁</button>
+  </div>
 
-  <!-- 2. 生日歌 -->
-  <section>
-    <h2>バースデーソング ♪</h2>
-    <p>クリックして再生して。</p>
-    <audio controls>
-      <source src="birthday_song.mp3" type="audio/mpeg">
-      お使いのブラウザでは音声が再生できません。
-    </audio>
-  </section> 
+  <!-- Main content -->
+  <div id="main" style="display:none;">
+    <section>
+      <h1>お誕生日おめでとう 🎂</h1>
+      <img src="图片1.jpg" alt="バースデーケーキ">
+    </section>
 
-  <!-- 3. 我的祝福语 -->
- <section>
-    <h2>私からのメッセージ 🎈</h2>
-    <p>
-      今日はあすかの特別な日だね。<br>
-      誕生日おめでとう！これからも一緒に笑って、楽しい毎日を過ごそう!<br>
-    </p>
-  </section>
+    <section>
+      <h2>バースデーソング ♪</h2>
+      <p>クリックして再生して。</p>
+      <audio controls>
+        <source src="birthday_song.mp3" type="audio/mpeg">
+        お使いのブラウザでは音声が再生できません。
+      </audio>
+    </section> 
 
-  <!-- 4. 留言板 -->
-  <section>
-    <h2>メッセージボード 💬</h2>
-    <p>ここに一言メッセージを書いてね！</p>
-    <form onsubmit="return postMessage(event)">
-      <textarea id="message" placeholder="メッセージを入力..."></textarea><br>
-      <button type="submit">送信</button>
-    </form>
-    <div id="messages" style="margin-top:20px;"></div>
-  </section>
+    <section>
+      <h2>私からのメッセージ 🎈</h2>
+      <p>
+        今日はあすかの特別な日だね。<br>
+        はじめて「お誕生日おめでとう」って言うね。これからの日々が、少しずつでもあたたかくて優しいものになりますように。<br>
+        これからも一緒に笑って、楽しい毎日を過ごそう!<br>
+      </p>
+    </section>
 
-  <footer>
-    <p>Created with ❤️ by KON</p>
-  </footer>
+    <section>
+      <h2>メッセージボード 💬</h2>
+      <p>ここに一言メッセージを書いてね！</p>
+      <form onsubmit="return postMessage(event)">
+        <textarea id="message" placeholder="メッセージを入力..."></textarea><br>
+        <button type="submit">送信</button>
+      </form>
+      <div id="messages" style="margin-top:20px;"></div>
+    </section>
+
+    <footer>
+      <p>Created with ❤️ by KON</p>
+    </footer>
+  </div>
 
   <script>
-    // 留言板简单存本地（刷新会留着）
+    // ========== Intro 动画 ==========
+    const intro = document.getElementById('intro');
+    const main = document.getElementById('main');
+    const btn = document.getElementById('enter-btn');
+
+    // 随机气球
+    for(let i=0;i<15;i++){
+      const b = document.createElement('div');
+      b.classList.add('balloon');
+      b.style.left = Math.random()*100 + '%';
+      b.style.background = `hsl(${Math.random()*360},70%,75%)`;
+      b.style.animationDelay = Math.random()*3+'s';
+      b.style.width = 40+Math.random()*40+'px';
+      document.body.appendChild(b);
+    }
+
+    btn.addEventListener('click', ()=>{
+      intro.style.opacity = '0';
+      setTimeout(()=>{
+        intro.style.display = 'none';
+        main.style.display = 'block';
+      }, 1000);
+    });
+
+    // ========== 留言板 ==========
     const msgBox = document.getElementById('messages');
     const stored = JSON.parse(localStorage.getItem('birthday_messages') || '[]');
     stored.forEach(addMessage);
@@ -141,6 +249,5 @@
       msgBox.prepend(div);
     }
   </script>
-
 </body>
 </html>
