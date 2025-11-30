@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>お誕生日おめでとう 🎂</title>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     body {
       margin: 0;
@@ -43,10 +44,12 @@
       font-size: 1.1rem;
       cursor: pointer;
       animation: fadeIn 3s ease forwards;
+      transition: transform 0.2s;
     }
 
     #enter-btn:hover {
       background: #f17888;
+      transform: scale(1.05);
     }
 
     /* ===== 氣球動畫 ===== */
@@ -107,6 +110,7 @@
     img {
       width: 220px;
       margin-top: 30px;
+      border-radius: 10px;
     }
 
     audio {
@@ -119,32 +123,6 @@
       margin: 40px auto;
       font-size: 0.9rem;
       color: #777;
-    }
-
-    textarea {
-      width: 90%;
-      max-width: 500px;
-      height: 100px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      font-size: 1rem;
-      resize: none;
-    }
-
-    button {
-      margin-top: 10px;
-      background: #e85a70;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-
-    button:hover {
-      background: #f17888;
     }
 
     /* ===== 手紙アニメーション ===== */
@@ -175,30 +153,44 @@
       transition: all 1s ease;
       max-width: 600px;
       margin: 20px auto 0;
+      min-height: 150px; /* 防止高度塌陷 */
     }
     #letter.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
+    /* 打字機效果的光標 */
+    .typing-cursor::after {
+      content: '|';
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
     .hidden {
       display: none;
+    }
+
+    /* Google Form Iframe 樣式 */
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 8px;
     }
   </style>
 </head>
 <body>
 
-  <!-- Intro -->
   <div id="intro">
     <h1>🎈 サプライズ！ 🎈</h1>
     <button id="enter-btn">クリックして開けてね 🎁</button>
   </div>
 
-  <!-- Main content -->
   <div id="main" style="display:none;">
     <section>
       <h1>お誕生日おめでとう 🎂</h1>
-      <img src="图片1.jpg" alt="バースデーケーキ">
+      <img src="图片1.jpg" alt="バースデーケーキ" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4562/4562477.png'">
     </section>
 
     <section>
@@ -218,23 +210,14 @@
       </div>
 
       <div id="letter" class="hidden">
-        <p>
-          今日はあすかの特別な日だね。<br>
-          はじめて「お誕生日おめでとう」って言うね。<br>
-          これからの日々が、少しずつでもあたたかくて優しいものになりますように。<br>
-          これからも一緒に笑って、楽しい毎日を過ごそう!🥳<br>
-        </p>
+        <p id="typewriter-text" class="typing-cursor"></p>
       </div>
     </section>
 
     <section>
       <h2>メッセージボード 💬</h2>
       <p>ここに一言メッセージを書いてね！</p>
-      <form onsubmit="return postMessage(event)">
-        <textarea id="message" placeholder="メッセージを入力..."></textarea><br>
-        <button type="submit">送信</button>
-      </form>
-      <div id="messages" style="margin-top:20px;"></div>
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc1X7jtuygt1koikHYoizP26mBZYEhU4tIdjduRZwZsmxRr5w/viewform?embedded=true" title="Google Form">読み込み中...</iframe>
     </section>
 
     <footer>
@@ -243,12 +226,12 @@
   </div>
 
   <script>
-    // ========== Intro 动画 ==========
+    // ========== Intro & Confetti 动画 ==========
     const intro = document.getElementById('intro');
     const main = document.getElementById('main');
     const btn = document.getElementById('enter-btn');
 
-    // 随机气球
+    // 随机气球背景
     for(let i=0;i<15;i++){
       const b = document.createElement('div');
       b.classList.add('balloon');
@@ -259,7 +242,31 @@
       document.body.appendChild(b);
     }
 
+    // 點擊按鈕觸發：彩帶特效 + 進入主頁
     btn.addEventListener('click', ()=>{
+      // 1. 播放彩帶禮炮
+      var duration = 3 * 1000;
+      var animationEnd = Date.now() + duration;
+      var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 99999 };
+
+      function randomInOut(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      var interval = setInterval(function() {
+        var timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        var particleCount = 50 * (timeLeft / duration);
+        // 隨機從左右兩邊噴射
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.1, 0.3), y: Math.random() - 0.2 } }));
+        confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInOut(0.7, 0.9), y: Math.random() - 0.2 } }));
+      }, 250);
+
+      // 2. 頁面淡出切換
       intro.style.opacity = '0';
       setTimeout(()=>{
         intro.style.display = 'none';
@@ -267,45 +274,58 @@
       }, 1000);
     });
 
-    // ========== 留言板 ==========
-    const msgBox = document.getElementById('messages');
-    const stored = JSON.parse(localStorage.getItem('birthday_messages') || '[]');
-    stored.forEach(addMessage);
+    // ========== 信件打字機動畫 ==========
+    
+    // 這裡定義你的信件內容 (支援 <br> 換行)
+    const letterContent = `今日はあすかの特別な日だね。<br>
+    はじめて「お誕生日おめでとう」って言うね。<br>
+    これからの日々が、少しずつでもあたたかくて優しいものになりますように。<br>
+    これからも一緒に笑って、楽しい毎日を過ごそう!🥳`;
 
-    function postMessage(e) {
-      e.preventDefault();
-      const text = document.getElementById('message').value.trim();
-      if(!text) return;
-      const msg = { text, time: new Date().toLocaleString('ja-JP') };
-      stored.push(msg);
-      localStorage.setItem('birthday_messages', JSON.stringify(stored));
-      addMessage(msg);
-      document.getElementById('message').value = '';
+    let isTyping = false; // 防止重複觸發
+
+    function typeWriter(text, elementId, speed = 80) {
+      const element = document.getElementById(elementId);
+      let i = 0;
+      element.innerHTML = ""; // 清空
+
+      function type() {
+        if (i < text.length) {
+          // 如果遇到 <br> 標籤，一次性寫入
+          if (text.substring(i, i+4) === "<br>") {
+            element.innerHTML += "<br>";
+            i += 4;
+          } else {
+            element.innerHTML += text.charAt(i);
+            i++;
+          }
+          setTimeout(type, speed);
+        } else {
+          // 打字結束，移除光標效果
+          element.classList.remove("typing-cursor");
+        }
+      }
+      type();
     }
 
-    function addMessage(m) {
-      const div = document.createElement('div');
-      div.style.background = '#fff';
-      div.style.padding = '10px 14px';
-      div.style.margin = '10px auto';
-      div.style.maxWidth = '500px';
-      div.style.borderRadius = '8px';
-      div.style.textAlign = 'left';
-      div.innerHTML = `<strong>🕊 ${m.time}</strong><br>${m.text}`;
-      msgBox.prepend(div);
-    }
-
-    // ========== 信件动画 ==========
     function openLetter() {
       const envelope = document.getElementById('envelope');
       const letter = document.getElementById('letter');
+      
+      // 如果已經打開過，就不再重複動畫
+      if(isTyping) return;
+      isTyping = true;
 
       envelope.classList.add('opened');
+      
       setTimeout(() => {
         envelope.style.display = 'none';
         letter.classList.remove('hidden');
         setTimeout(() => letter.classList.add('visible'), 50);
-      }, 800); // 动画延迟后显示文字
+        
+        // 開始打字機效果
+        typeWriter(letterContent, 'typewriter-text', 100); 
+      }, 800); 
     }
   </script>
 </body>
