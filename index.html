@@ -105,6 +105,14 @@
       margin-top: 60px;
       color: #e85a70;
     }
+    
+    /* ====== 修正：手機螢幕優化 ====== */
+    @media (max-width: 600px) {
+        h1 {
+            font-size: 1.8rem; /* 縮小字體以在手機螢幕上保持單行顯示 */
+        }
+    }
+    /* ================================= */
 
     p {
       font-size: 1.1rem;
@@ -199,7 +207,7 @@
     </audio>
 
     <section>
-      <h1>お誕生日おめでとう！ 🎂</h1>
+      <h1>お誕生日おめでとう 🎂</h1>
       <img src="图片1.jpg" alt="バースデーケーキ" onerror="this.src='https://cdn-icons-png.flaticon.com/512/4562/4562477.png'">
       <p style="margin-top: 30px;">
         <button id="music-control-1" class="music-btn" onclick="toggleMusic()">🎵 音楽を再生</button>
@@ -227,7 +235,7 @@
 
     <section>
       <h2>メッセージボード 💬</h2>
-      <p>良かったら、ここに一言メッセージを書いてね✨！</p>
+      <p>最後に、ここからお祝いメッセージを送ってね！</p>
       <a href="https://docs.google.com/forms/d/1iHgAsxYTHLH4lZEIaJbK48qq3uAxbiqxMoBAsUPMePY/viewform" 
          target="_blank" 
          class="message-button">
@@ -236,7 +244,7 @@
       <p style="margin-top: 30px;">
         <button id="music-control-3" class="music-btn" onclick="toggleMusic()">🎵 音楽を再生</button>
       </p>
-      <p style="margin-top: 40px;">🎉 全て完了！素敵な一日を！ 🎉</p>
+      <p style="margin-top: 40px;">🎉 これで全て完了です！素敵な一日を！ 🎉</p>
     </section>
 
     <footer>
@@ -250,7 +258,6 @@
     const main = document.getElementById('main');
     const btn = document.getElementById('enter-btn');
     const balloons = [];
-    // 獲取所有內容區塊
     const sections = document.querySelectorAll('#main section');
     const audio = document.getElementById('background-music');
     let isTyping = false;
@@ -259,7 +266,6 @@
 
     function updateMusicButtonDisplay() {
         const isPlaying = !audio.paused;
-        // 注意：按鈕 ID 數量減少，但 class 保持 .music-btn，依然能正確遍歷。
         const buttonTexts = document.querySelectorAll('.music-btn');
 
         buttonTexts.forEach(btn => {
@@ -277,7 +283,7 @@
         if (audio.paused) {
             audio.play().catch(error => {
                 console.error("Audio playback failed:", error);
-                alert("音聲の自動再生はブロックされた。画面を操作した後、もう一度再生ボタンを押してください。");
+                alert("音聲の自動再生はブロックされました。画面を操作した後、もう一度再生ボタンを押してください。");
             });
         } else {
             audio.pause();
@@ -289,13 +295,11 @@
     audio.addEventListener('pause', updateMusicButtonDisplay);
 
 
-    // ========== 翻頁邏輯 (保持不變) ==========
+    // ========== 翻頁邏輯 ==========
 
     function nextPage(currentIndex) {
-        // 隱藏當前頁面 (索引 = 頁碼 - 1)
         sections[currentIndex - 1].style.display = 'none';
         
-        // 顯示下一頁 (索引 = 頁碼)
         const nextIndex = currentIndex;
         if (nextIndex < sections.length) {
             sections[nextIndex].style.display = 'block';
@@ -359,7 +363,7 @@
     
     const letterContent = `今日はあすかの特別な日だね。<br>
     はじめて「お誕生日おめでとう」って言うね。<br>
-    これからの日々が、少しずつでもあたたかくて優しいものになるように。<br>
+    これからの日々が、少しずつでもあたたかくて優しいものになりますように。<br>
     これからも一緒に笑って、楽しい毎日を過ごそう!🥳`;
 
     const nextBtnAfterLetter = document.getElementById('next-to-message-board');
